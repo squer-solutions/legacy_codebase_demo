@@ -2,6 +2,14 @@
 
 Workshop notebook **"Make Legacy Codebase Searchable"** – `legacy-codebase.ipynb`, built on COBOL/CICS sources from [AWS CardDemo](aws-mainframe-modernization-carddemo/).
 
+## Clone
+
+CardDemo is included as a git submodule:
+
+```bash
+git clone --recurse-submodules <this-repo>      # or, in an existing clone: git submodule update --init
+```
+
 ## Start the local backends (Docker Compose)
 
 The notebook itself runs on your machine (Jupyter / IDE). Only the two backends run in Docker:
