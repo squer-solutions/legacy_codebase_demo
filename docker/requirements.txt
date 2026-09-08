@@ -1,13 +1,5 @@
-# Notebook runtime
-jupyterlab>=4.2
-ipykernel>=6.29
-nbformat>=5.10
-nbclient>=0.10
-
-# Workshop cells
-numpy>=1.26
-networkx>=3.2
-matplotlib>=3.8
-torch>=2.2            # CPU wheels via --extra-index-url https://download.pytorch.org/whl/cpu
+# Embedding model server (docker/embeddings_server.py)
+torch>=2.2                 # CPU wheels via --extra-index-url https://download.pytorch.org/whl/cpu
 sentence-transformers>=3.0
-qdrant-client>=1.12
+fastapi>=0.110
+uvicorn>=0.29
