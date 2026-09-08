@@ -4,11 +4,7 @@ Workshop notebook **"Make Legacy Codebase Searchable"** – `legacy-codebase.ipy
 
 ## Clone
 
-CardDemo is included as a git submodule:
-
-```bash
-git clone --recurse-submodules <this-repo>      # or, in an existing clone: git submodule update --init
-```
+CardDemo sources are included directly in this repository (`aws-mainframe-modernization-carddemo/`, from [aws-samples](https://github.com/aws-samples/aws-mainframe-modernization-carddemo), Apache-2.0). A plain `git clone` is all you need.
 
 ## Start the local backends (Docker Compose)
 
