@@ -37,6 +37,10 @@ QDRANT_PORT=6335 QDRANT_GRPC_PORT=6336 EMBED_PORT=8081 docker compose up --build
 QDRANT_URL=http://localhost:6335 EMBED_URL=http://localhost:8081 jupyter lab
 ```
 
+## LLM descriptions (`data/summaries.json`)
+
+Section 2 translates every code chunk into a plain-English description with `ask_claude_code()` (Claude Code CLI) and caches the result in `data/summaries.json`. The committed cache covers all 104 chunks, so the notebook makes **no LLM call** unless you delete the file or add new source files. Regeneration needs the `claude` CLI on the host and takes about 4 minutes for the 7 files.
+
 ## Without Docker
 
 If the services are not reachable the notebook falls back automatically: embeddings are computed in-process with `sentence-transformers` (needs `pip install sentence-transformers`) and Qdrant runs embedded in-process (`:memory:`). Results are identical, only the setup takes longer.

@@ -1,0 +1,1112 @@
+{
+ "COCOM01Y::CARDDEMO-COMMAREA": {
+  "summary": "Defines the CICS communication area (COMMAREA) shared between CardDemo application programs so context can be passed from one program or transaction to the next. It carries navigation details (from/to transaction and program IDs, the signed-on user ID, whether the user is an Admin or a regular User, and whether the program is being entered for the first time or re-entered), plus the current customer ID and name, account ID and status, card number, and the last BMS map and mapset displayed. It is a data structure only and performs no file or screen I/O itself.",
+  "keywords": [
+   "COMMAREA",
+   "program context",
+   "user type admin/user",
+   "customer account card IDs",
+   "transaction navigation",
+   "last map/mapset"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::WS-MISC-STORAGE": {
+  "summary": "Working-storage area for the credit card list program holding CICS response codes, input-validation flags for the account and card number filters, the seven per-row selection codes (S = view, U = update) with their error flags, the info and error message texts (e.g. 'NO RECORDS FOUND FOR THIS SEARCH CONDITION', 'PLEASE SELECT ONLY ONE RECORD TO VIEW OR UPDATE'), the card file record key, read-loop control flags, and a formatted file-error message template.",
+  "keywords": [
+   "card list working storage",
+   "input validation flags",
+   "row selection flags",
+   "error messages",
+   "file error message"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::WS-CONSTANTS": {
+  "summary": "Constants for the card list program: the maximum of 7 screen lines, this program's own name, transaction CCLI, mapset and map names, and the names, transactions and maps of the main menu (COMEN01C), card detail (COCRDSLC) and card update (COCRDUPC) programs, plus the card file name CARDDAT and its account-number alternate index CARDAIX. Also pulls in the common card work area and application commarea copybooks.",
+  "keywords": [
+   "program constants",
+   "transaction ids",
+   "card file CARDDAT",
+   "account index CARDAIX",
+   "navigation targets"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::WS-THIS-PROGCOMMAREA": {
+  "summary": "Program-specific commarea carried between screen interactions for paging: the first and last card keys shown on the current page, the current page number, flags for whether the last page has been shown and whether a next page exists, a return flag, and a 7-row array of the displayed cards (account number, card number, card status).",
+  "keywords": [
+   "paging state",
+   "page number",
+   "first and last card key",
+   "screen row array",
+   "commarea"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::WS-COMMAREA": {
+  "summary": "A 2000-byte output commarea buffer, followed by the IBM BMS and attention-key copybooks, screen titles, the credit card list screen layout (COCRDLI), current date, common messages, signed-on user data and the card record layout (CVACT02Y).",
+  "keywords": [
+   "commarea buffer",
+   "screen layout copybook",
+   "card record layout",
+   "copybooks"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::DFHCOMMAREA": {
+  "summary": "Linkage section definition of the incoming CICS commarea as a variable-length byte area whose size is given by EIBCALEN.",
+  "keywords": [
+   "linkage section",
+   "incoming commarea",
+   "EIBCALEN"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::0000-MAIN": {
+  "summary": "Main control flow of the credit card list screen. On first entry or when arriving from another program it resets paging state to the first page; otherwise it restores the commarea, receives and edits the user's input, and validates the function key (only Enter, PF3, PF7, PF8 are accepted; others are treated as Enter). PF3 transfers back to the main menu; PF8 pages forward and PF7 pages backward by reading the card file from the saved first/last key; Enter with an 'S' or 'U' on a row transfers control to the card detail or card update program passing the selected account and card number; input errors redisplay the screen with the error message. All screen redisplays go through 1000-SEND-MAP and end in COMMON-RETURN.",
+  "keywords": [
+   "card list main",
+   "page up page down",
+   "PF key handling",
+   "transfer to card detail",
+   "transfer to card update",
+   "return to menu"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::COMMON-RETURN": {
+  "summary": "Records this program, transaction and map as the current context, copies the application commarea and the program's own paging commarea into the output buffer, and returns to CICS with transaction CCLI so the next user action re-enters this program.",
+  "keywords": [
+   "CICS return",
+   "save commarea",
+   "pseudo-conversational",
+   "transaction CCLI"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::0000-MAIN-EXIT": {
+  "summary": "Exit point marking the end of the main paragraph; performs no processing.",
+  "keywords": [
+   "exit paragraph",
+   "main exit"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1000-SEND-MAP": {
+  "summary": "Builds and sends the card list screen by performing in sequence: header initialisation, filling the seven card rows, setting row selection attributes, setting the search-filter field attributes and cursor, composing the info/error messages, and finally sending the screen.",
+  "keywords": [
+   "send screen",
+   "build card list map",
+   "screen assembly"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1000-SEND-MAP-EXIT": {
+  "summary": "Exit point for the send-map routine; performs no processing.",
+  "keywords": [
+   "exit paragraph",
+   "send map exit"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1100-SCREEN-INIT": {
+  "summary": "Clears the card list screen output area and populates the header fields: the two screen titles, transaction id, program name, current date (MM/DD/YY) and time (HH:MM:SS), the current page number, and an initially blank info message.",
+  "keywords": [
+   "screen header",
+   "current date time",
+   "page number display",
+   "clear screen"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1100-SCREEN-INIT-EXIT": {
+  "summary": "Exit point for the screen initialisation routine; performs no processing.",
+  "keywords": [
+   "exit paragraph",
+   "screen init exit"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1200-SCREEN-ARRAY-INIT": {
+  "summary": "For each of the seven card rows held in the paging commarea that contains data, moves the selection code, account number, card number and card status into the corresponding output fields of the card list screen; empty rows are left blank.",
+  "keywords": [
+   "populate card rows",
+   "account number",
+   "card number",
+   "card status",
+   "screen detail lines"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1200-SCREEN-ARRAY-INIT-EXIT": {
+  "summary": "Exit point for the screen array population routine; performs no processing.",
+  "keywords": [
+   "exit paragraph",
+   "screen array exit"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1250-SETUP-ARRAY-ATTRIBS": {
+  "summary": "Sets the display attributes of the seven row selection fields: rows with no card data, or when row selection is globally protected, are made protected (non-enterable); otherwise the field is made enterable, and if that row's selection code was flagged in error it is highlighted red, the cursor is positioned there, and on row 1 a blank selection is replaced by '*'.",
+  "keywords": [
+   "row selection attributes",
+   "protect rows",
+   "highlight error red",
+   "cursor positioning",
+   "action code error"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1250-SETUP-ARRAY-ATTRIBS-EXIT": {
+  "summary": "Exit point for the row attribute setup routine; performs no processing.",
+  "keywords": [
+   "exit paragraph",
+   "array attribs exit"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1300-SETUP-SCREEN-ATTRS": {
+  "summary": "Redisplays the account-number and card-number search filter fields: on a fresh start from the menu they are left blank, otherwise the user's entered filter (valid or invalid) or the account/card number carried in the commarea is shown. Invalid filters are highlighted red with the cursor placed on them; if input is error-free the cursor is placed on the account number field.",
+  "keywords": [
+   "search filter fields",
+   "account filter",
+   "card filter",
+   "highlight invalid input",
+   "cursor position"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1300-SETUP-SCREEN-ATTRS-EXIT": {
+  "summary": "Exit point for the screen attribute setup routine; performs no processing.",
+  "keywords": [
+   "exit paragraph",
+   "screen attrs exit"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1400-SETUP-MESSAGE": {
+  "summary": "Determines the message to show on the card list screen: keeps any filter validation error; shows 'NO PREVIOUS PAGES TO DISPLAY' for PF7 on the first page and 'NO MORE PAGES TO DISPLAY' for PF8 when the last page was already shown; otherwise displays the informational hint 'TYPE S FOR DETAIL, U TO UPDATE ANY RECORD' and marks the last page as shown when no next page exists. Moves the error message to the screen and, unless no records were found, the info message too.",
+  "keywords": [
+   "screen messages",
+   "no more pages",
+   "no previous pages",
+   "record action hint",
+   "last page flag"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1400-SETUP-MESSAGE-EXIT": {
+  "summary": "Exit point for the message setup routine; performs no processing.",
+  "keywords": [
+   "exit paragraph",
+   "message setup exit"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1500-SEND-SCREEN": {
+  "summary": "Sends the credit card list map to the terminal from the output area, erasing the previous screen, positioning the cursor and unlocking the keyboard. The CICS response code is captured but not checked here.",
+  "keywords": [
+   "send screen",
+   "card list map",
+   "display",
+   "CICS SEND MAP",
+   "screen output"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::1500-SEND-SCREEN-EXIT": {
+  "summary": "Exit point for the send-screen paragraph; performs no processing.",
+  "keywords": [
+   "exit",
+   "send screen",
+   "paragraph end"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2000-RECEIVE-MAP": {
+  "summary": "Driver for handling user input: receives the card list screen and then runs the input edits on the account filter, card filter and selection column.",
+  "keywords": [
+   "receive input",
+   "screen input",
+   "validate input",
+   "driver paragraph"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2000-RECEIVE-MAP-EXIT": {
+  "summary": "Exit point for the receive-map driver; performs no processing.",
+  "keywords": [
+   "exit",
+   "receive map",
+   "paragraph end"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2100-RECEIVE-SCREEN": {
+  "summary": "Receives the card list screen into the input area and copies the account ID filter, card number filter and the seven row selection codes into working fields for editing. The CICS response code is stored but not checked here.",
+  "keywords": [
+   "receive screen",
+   "account filter",
+   "card filter",
+   "row selection",
+   "CICS RECEIVE MAP"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2100-RECEIVE-SCREEN-EXIT": {
+  "summary": "Exit point for the receive-screen paragraph; performs no processing.",
+  "keywords": [
+   "exit",
+   "receive screen",
+   "paragraph end"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2200-EDIT-INPUTS": {
+  "summary": "Resets the input status to OK and unprotects the selection rows, then validates the account filter, the card number filter and the selection array in turn.",
+  "keywords": [
+   "edit inputs",
+   "validation",
+   "account filter",
+   "card filter",
+   "selection check"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2200-EDIT-INPUTS-EXIT": {
+  "summary": "Exit point for the input-edit paragraph; performs no processing.",
+  "keywords": [
+   "exit",
+   "edit inputs",
+   "paragraph end"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2210-EDIT-ACCOUNT": {
+  "summary": "Validates the optional account ID filter. A blank or zero entry is treated as no filter and clears the commarea account ID; a non-numeric entry sets an input error, protects the selection rows, and sets the message 'ACCOUNT FILTER,IF SUPPLIED MUST BE A 11 DIGIT NUMBER'. A valid entry is copied to the commarea account ID.",
+  "keywords": [
+   "account filter",
+   "account ID validation",
+   "11 digit",
+   "numeric check",
+   "input error"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2210-EDIT-ACCOUNT-EXIT": {
+  "summary": "Exit point for the account filter edit; performs no processing.",
+  "keywords": [
+   "exit",
+   "account filter",
+   "paragraph end"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2220-EDIT-CARD": {
+  "summary": "Validates the optional card number filter. A blank or zero entry is treated as no filter and clears the commarea card number; a non-numeric entry sets an input error, protects the selection rows, and sets the message 'CARD ID FILTER,IF SUPPLIED MUST BE A 16 DIGIT NUMBER' unless an earlier message already exists. A valid entry is copied to the commarea card number.",
+  "keywords": [
+   "card filter",
+   "card number validation",
+   "16 digit",
+   "numeric check",
+   "input error"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2220-EDIT-CARD-EXIT": {
+  "summary": "Exit point for the card filter edit; performs no processing.",
+  "keywords": [
+   "exit",
+   "card filter",
+   "paragraph end"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2250-EDIT-ARRAY": {
+  "summary": "Validates the seven row selection codes, skipping entirely if an earlier edit already failed. If more than one row is marked with 'S' or 'U' it flags an input error and marks each selected row in error; any code other than 'S', 'U' or blank is flagged as an invalid action code for that row. The index of the selected row is recorded for later processing.",
+  "keywords": [
+   "row selection",
+   "action code",
+   "multiple selection",
+   "invalid action",
+   "select card",
+   "update card"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::2250-EDIT-ARRAY-EXIT": {
+  "summary": "Exit point for the selection array edit; performs no processing.",
+  "keywords": [
+   "exit",
+   "selection array",
+   "paragraph end"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::9000-READ-FORWARD": {
+  "summary": "Browses the card file forward from the current card key, applying the account and card filters, and fills up to one screen of rows with card number, account ID and active status. It remembers the first and last card on the page, peeks one record ahead to decide whether a next page exists, and sets 'NO MORE RECORDS TO SHOW' at end of file or a no-records flag when the first page is empty. Any other file error builds a file error message with the response codes, then the browse is ended.",
+  "keywords": [
+   "browse card file",
+   "page forward",
+   "card list",
+   "pagination",
+   "next page",
+   "file error"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::9000-READ-FORWARD-EXIT": {
+  "summary": "Exit point for the forward browse; performs no processing.",
+  "keywords": [
+   "exit",
+   "read forward",
+   "paragraph end"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::9100-READ-BACKWARDS": {
+  "summary": "Browses the card file backwards from the first card of the current page to rebuild the previous page, applying the account and card filters and filling the screen rows from the bottom up with card number, account ID and status. When the page is full it records the new first card key; any read error builds a file error message with the response codes and stops the loop.",
+  "keywords": [
+   "browse card file",
+   "page backward",
+   "previous page",
+   "card list",
+   "pagination",
+   "file error"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::9100-READ-BACKWARDS-EXIT": {
+  "summary": "Ends the browse on the card file and exits the backward read paragraph.",
+  "keywords": [
+   "end browse",
+   "read backwards",
+   "ENDBR",
+   "paragraph end"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::9500-FILTER-RECORDS": {
+  "summary": "Decides whether the current card record should appear on the list. If a valid account filter is present the record is excluded unless its account ID matches, and if a valid card filter is present it is excluded unless the card number matches.",
+  "keywords": [
+   "filter records",
+   "account filter",
+   "card filter",
+   "exclude record",
+   "list criteria"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::9500-FILTER-RECORDS-EXIT": {
+  "summary": "Exit point for the record filter, followed by inclusion of the common copybook CSSTRPFY that stores the pressed PF key.",
+  "keywords": [
+   "exit",
+   "filter records",
+   "PF key",
+   "CSSTRPFY copybook"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::SEND-PLAIN-TEXT": {
+  "summary": "Sends the contents of the working-storage error message field to the terminal as plain text, clearing the screen and unlocking the keyboard, then ends the transaction immediately with a CICS RETURN. The header comment marks it as a debugging exit that should not be used in production.",
+  "keywords": [
+   "plain text error display",
+   "debug exit",
+   "send text",
+   "error message",
+   "transaction return"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::SEND-PLAIN-TEXT-EXIT": {
+  "summary": "Empty exit label marking the end of the plain-text send paragraph; performs no processing.",
+  "keywords": [
+   "exit label",
+   "paragraph end",
+   "no-op",
+   "plain text exit"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::SEND-LONG-TEXT": {
+  "summary": "Sends the working-storage long message field to the terminal as plain text, clearing the screen and unlocking the keyboard, then ends the transaction with a CICS RETURN. The header comment states it is primarily for debugging and should not be used in the regular course of processing.",
+  "keywords": [
+   "long text display",
+   "debug exit",
+   "send text",
+   "diagnostic message",
+   "transaction return"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COCRDLIC::SEND-LONG-TEXT-EXIT": {
+  "summary": "Empty exit label marking the end of the long-text send paragraph; performs no processing. The trailing comment records the program version and build date (CardDemo v1.0, 2022-07-19).",
+  "keywords": [
+   "exit label",
+   "paragraph end",
+   "no-op",
+   "version stamp",
+   "CardDemo"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COSGN00C::WS-VARIABLES": {
+  "summary": "Working storage for the sign-on program: holds the program name COSGN00C, transaction ID CC00, the user security file name USRSEC, an 80-character message area, an error flag (Y/N), CICS response and reason codes, and the entered user ID and password. It also pulls in the shared communication area, the COSGN00 sign-on screen map, title/date/message layouts, the user security record layout, and CICS attention-key and attribute constants.",
+  "keywords": [
+   "sign-on working storage",
+   "USRSEC file",
+   "transaction CC00",
+   "error flag",
+   "user ID password fields"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COSGN00C::DFHCOMMAREA": {
+  "summary": "Defines the CICS communication area passed into the program as a variable-length byte array whose length is set by the caller (EIBCALEN). It is the raw carrier for data handed between transactions.",
+  "keywords": [
+   "commarea",
+   "communication area",
+   "EIBCALEN",
+   "linkage section",
+   "variable length"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COSGN00C::MAIN-PARA": {
+  "summary": "Entry point of the sign-on transaction. On first entry (no commarea) it clears the screen fields, positions the cursor on the User ID field and displays the sign-on screen; on re-entry it processes Enter by validating the sign-on, PF3 by sending a thank-you message and ending, and any other key by redisplaying the screen with an invalid-key error. It then returns to CICS under transaction CC00, passing the CardDemo commarea.",
+  "keywords": [
+   "sign-on entry point",
+   "Enter key",
+   "PF3 exit",
+   "invalid key",
+   "CICS RETURN"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COSGN00C::PROCESS-ENTER-KEY": {
+  "summary": "Receives the sign-on screen input and checks that both User ID and Password were entered; if either is blank it sets the error flag, shows a 'Please enter ...' message and redisplays the screen with the cursor on the missing field. Otherwise it upper-cases the user ID and password, stores the user ID in the commarea, and calls the user security file lookup.",
+  "keywords": [
+   "receive sign-on screen",
+   "user ID required",
+   "password required",
+   "upper-case input",
+   "field validation"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COSGN00C::SEND-SIGNON-SCREEN": {
+  "summary": "Displays the sign-on screen (map COSGN0A) after filling in the header information and moving the current message text into the screen's error message field. The screen is erased and redrawn with the cursor positioned as set by the caller.",
+  "keywords": [
+   "send sign-on screen",
+   "display error message",
+   "COSGN0A map",
+   "screen redisplay"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COSGN00C::SEND-PLAIN-TEXT": {
+  "summary": "Sends the current message as plain text to the terminal, clearing the screen and unlocking the keyboard, then returns control to CICS with no next transaction. Used to end the session, for example after PF3 with the thank-you message.",
+  "keywords": [
+   "plain text message",
+   "exit sign-on",
+   "thank you message",
+   "end transaction",
+   "SEND TEXT"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COSGN00C::POPULATE-HEADER-INFO": {
+  "summary": "Fills the header of the sign-on screen with the two application titles, transaction ID, program name, current date (MM/DD/YY) and current time (HH:MM:SS) derived from the system date, plus the CICS application ID and system ID obtained via CICS ASSIGN.",
+  "keywords": [
+   "screen header",
+   "current date time",
+   "application ID",
+   "system ID",
+   "titles"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COSGN00C::READ-USER-SEC-FILE": {
+  "summary": "Reads the user security file USRSEC by user ID. If found and the stored password matches, it records the originating transaction, program, user ID and user type in the commarea and transfers control to the admin menu COADM01C for admin users or the main menu COMEN01C for all others. A mismatched password shows 'Wrong Password', a missing record (response 13) shows 'User not found', and any other error shows 'Unable to verify the User', each redisplaying the sign-on screen with the cursor on the relevant field.",
+  "keywords": [
+   "user authentication",
+   "password check",
+   "USRSEC read",
+   "user not found",
+   "admin vs regular menu",
+   "XCTL"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::WS-VARIABLES": {
+  "summary": "Working storage for the transaction list program: program name COTRN00C, transaction code CT00, the TRANSACT file name, and flags for error, end-of-file and whether the screen should be erased on send. Also holds CICS response codes, a row index, page number, a formatted transaction amount and date, and the shared commarea extension CDEMO-CT00-INFO that remembers the first and last transaction ID on the current page, the page number, whether a next page exists, and the user's row selection.",
+  "keywords": [
+   "working storage",
+   "transaction list",
+   "page state",
+   "commarea",
+   "TRANSACT file",
+   "error flag"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::DFHCOMMAREA": {
+  "summary": "Linkage definition of the CICS communication area passed in from the calling program, sized dynamically by EIBCALEN up to 32767 bytes.",
+  "keywords": [
+   "commarea",
+   "linkage section",
+   "program input",
+   "EIBCALEN"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::MAIN-PARA": {
+  "summary": "Entry point of the transaction list screen. If no commarea is passed it transfers to the sign-on program COSGN00C; on first entry it clears the screen map, loads the first page and sends it. On re-entry it receives the screen and acts on the key pressed: Enter processes selection or filter, PF3 returns to the menu COMEN01C, PF7 pages backward, PF8 pages forward, and any other key shows an invalid key message. Finally it returns to CICS with transaction CT00 and the commarea.",
+  "keywords": [
+   "main entry",
+   "transaction list screen",
+   "function keys",
+   "PF3 exit",
+   "return to menu",
+   "invalid key"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::PROCESS-ENTER-KEY": {
+  "summary": "Handles the Enter key on the transaction list. It checks the ten selection fields; if a row is marked with S or s it transfers control to the transaction detail program COTRN01C for that transaction ID, otherwise an 'Invalid selection' message is set. It then validates the optional Transaction ID filter, requiring it to be numeric or showing an error, resets the page number to zero and loads the first page forward from that ID.",
+  "keywords": [
+   "enter key",
+   "select transaction",
+   "view transaction detail",
+   "transaction ID filter",
+   "numeric validation",
+   "invalid selection"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::PROCESS-PF7-KEY": {
+  "summary": "Handles PF7 (page up). It positions on the first transaction ID of the current page and reads the previous page if the page number is greater than 1; otherwise it shows 'You are already at the top of the page' without erasing the screen.",
+  "keywords": [
+   "PF7",
+   "page up",
+   "previous page",
+   "top of page",
+   "paging"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::PROCESS-PF8-KEY": {
+  "summary": "Handles PF8 (page down). It positions on the last transaction ID of the current page and reads the next page if a next page flag is set; otherwise it shows 'You are already at the bottom of the page' without erasing the screen.",
+  "keywords": [
+   "PF8",
+   "page down",
+   "next page",
+   "bottom of page",
+   "paging"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::PROCESS-PAGE-FORWARD": {
+  "summary": "Builds the next page of the transaction list. It starts a browse on the TRANSACT file at the current key, skips the already-shown record when paging with PF8, clears the ten display rows, reads forward up to ten transactions into the screen, then peeks one more record to determine whether a next page exists. It increments the page number, ends the browse, and sends the list screen. Browse errors are reported by the called file paragraphs.",
+  "keywords": [
+   "page forward",
+   "browse transactions",
+   "TRANSACT file",
+   "next page check",
+   "populate list",
+   "page number"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::PROCESS-PAGE-BACKWARD": {
+  "summary": "Builds the previous page of the transaction list. It starts a browse on the TRANSACT file at the first ID of the current page, steps back past that record, clears the ten rows and reads backward filling rows 10 down to 1. It then reads one more record back to decide whether to decrement the page number or reset it to 1, ends the browse and sends the list screen.",
+  "keywords": [
+   "page backward",
+   "read previous",
+   "browse transactions",
+   "TRANSACT file",
+   "previous page",
+   "page number"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::POPULATE-TRAN-DATA": {
+  "summary": "Formats the current transaction record for display: the amount is edited with sign and decimals and the original timestamp is converted to MM/DD/YY. Based on the row index 1 to 10 it moves transaction ID, date, description and amount into that screen row, and records row 1's ID as the page's first ID and row 10's ID as the page's last ID for paging.",
+  "keywords": [
+   "populate row",
+   "format amount",
+   "format date",
+   "transaction display",
+   "first last ID",
+   "screen row"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::INITIALIZE-TRAN-DATA": {
+  "summary": "Clears one display row of the transaction list, chosen by the row index 1 to 10, by moving spaces to the transaction ID, date, description and amount fields.",
+  "keywords": [
+   "clear row",
+   "initialize screen",
+   "blank list",
+   "reset display"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::RETURN-TO-PREV-SCREEN": {
+  "summary": "Transfers control to the target program held in the commarea, defaulting to sign-on program COSGN00C if none is set. It records this program and transaction CT00 as the caller and resets the program context to zero before the CICS XCTL.",
+  "keywords": [
+   "return to previous screen",
+   "exit program",
+   "XCTL",
+   "sign-on",
+   "navigation"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::SEND-TRNLST-SCREEN": {
+  "summary": "Sends the transaction list map COTRN0A from mapset COTRN00 to the terminal. It first fills the header information, places the current message in the error message field, and sends with ERASE and cursor positioning unless the no-erase flag is set, in which case the screen is overlaid without clearing.",
+  "keywords": [
+   "send screen",
+   "transaction list map",
+   "error message",
+   "display",
+   "CICS SEND"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::RECEIVE-TRNLST-SCREEN": {
+  "summary": "Receives user input from the transaction list map COTRN0A of mapset COTRN00 into the input area, capturing CICS response and reason codes.",
+  "keywords": [
+   "receive screen",
+   "user input",
+   "transaction list map",
+   "CICS RECEIVE"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::POPULATE-HEADER-INFO": {
+  "summary": "Fills the screen header with the two application title lines, the transaction code CT00, the program name, and the current date formatted MM/DD/YY and time formatted HH:MM:SS from the system clock.",
+  "keywords": [
+   "screen header",
+   "title",
+   "current date",
+   "current time",
+   "program name"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::STARTBR-TRANSACT-FILE": {
+  "summary": "Starts a CICS browse on the TRANSACT file positioned at the transaction ID key. If the key is not found it sets end-of-file and shows 'You are at the top of the page'. Any other error sets the error flag, displays the response codes, and shows 'Unable to lookup transaction' on the screen.",
+  "keywords": [
+   "start browse",
+   "TRANSACT file",
+   "STARTBR",
+   "not found",
+   "lookup error"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::READNEXT-TRANSACT-FILE": {
+  "summary": "Reads the next transaction record from the TRANSACT file browse into the transaction record area. At end of file it sets the end-of-file flag and shows 'You have reached the bottom of the page'. Other errors set the error flag, display the response codes and show 'Unable to lookup transaction'.",
+  "keywords": [
+   "read next",
+   "TRANSACT file",
+   "READNEXT",
+   "end of file",
+   "bottom of page",
+   "lookup error"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::READPREV-TRANSACT-FILE": {
+  "summary": "Reads the previous transaction record from the TRANSACT file browse into the transaction record area. At end of file it sets the end-of-file flag and shows 'You have reached the top of the page'. Other errors set the error flag, display the response codes and show 'Unable to lookup transaction'.",
+  "keywords": [
+   "read previous",
+   "TRANSACT file",
+   "READPREV",
+   "end of file",
+   "top of page",
+   "lookup error"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN00C::ENDBR-TRANSACT-FILE": {
+  "summary": "Ends the CICS browse on the TRANSACT file, releasing the browse position after a page has been built.",
+  "keywords": [
+   "end browse",
+   "TRANSACT file",
+   "ENDBR",
+   "release browse"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::WS-VARIABLES": {
+  "summary": "Working storage for the transaction view program: program name COTRN01C, CICS transaction code CT01, the TRANSACT file name, an 80-character message area, an error flag, CICS response/reason codes, a formatted transaction amount field and a date field. It also brings in the shared CardDemo commarea (with CT01-specific paging and selected-transaction fields), the COTRN01 screen map, title, date, message and transaction record copybooks, plus the CICS attention-key and attribute constants.",
+  "keywords": [
+   "working storage",
+   "transaction view",
+   "TRANSACT file",
+   "commarea",
+   "error flag",
+   "program constants"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::DFHCOMMAREA": {
+  "summary": "Defines the CICS communication area passed into the program as a variable-length byte string whose length is given by EIBCALEN. It carries the CardDemo context (calling program, re-enter flag, selected transaction) between screens.",
+  "keywords": [
+   "commarea",
+   "linkage section",
+   "EIBCALEN",
+   "program input",
+   "screen context"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::MAIN-PARA": {
+  "summary": "Entry point for the transaction view screen. If no commarea is present it transfers to the sign-on program; on first entry it initialises the screen, pre-fills the transaction ID if one was passed from the transaction list and looks it up, then sends the screen. On re-entry it receives the screen and acts on the key pressed: Enter looks up the transaction, PF3 returns to the calling program or main menu, PF4 clears the screen, PF5 returns to the transaction list, and any other key shows an invalid-key message. It ends by returning to CICS with transaction CT01 and the commarea.",
+  "keywords": [
+   "main logic",
+   "transaction view",
+   "PF key handling",
+   "enter key",
+   "return to menu",
+   "screen navigation"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::PROCESS-ENTER-KEY": {
+  "summary": "Handles Enter on the transaction view screen. If the Transaction ID field is empty it sets an error and shows the message 'Tran ID can NOT be empty...'. Otherwise it clears all detail fields, reads the TRANSACT file by transaction ID and, if found, displays the transaction details on screen: ID, card number, type and category codes, source, formatted amount, description, original and processing timestamps and merchant ID, name, city and ZIP.",
+  "keywords": [
+   "enter key",
+   "transaction lookup",
+   "validate transaction ID",
+   "display transaction details",
+   "empty tran ID error",
+   "merchant details"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::RETURN-TO-PREV-SCREEN": {
+  "summary": "Transfers control to the target program named in the commarea, defaulting to the sign-on program COSGN00C if none is set. Before transferring it records CT01 and COTRN01C as the calling transaction and program and resets the program context to zero.",
+  "keywords": [
+   "return to previous screen",
+   "XCTL",
+   "program transfer",
+   "navigation",
+   "sign-on fallback"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::SEND-TRNVIEW-SCREEN": {
+  "summary": "Sends the transaction view screen (map COTRN1A in mapset COTRN01) to the terminal. It first fills in the header (titles, date, time, program and transaction names), places the current message in the error message line, erases the screen and positions the cursor.",
+  "keywords": [
+   "send screen",
+   "transaction view map",
+   "COTRN1A",
+   "error message display",
+   "screen output"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::RECEIVE-TRNVIEW-SCREEN": {
+  "summary": "Receives user input from the transaction view screen (map COTRN1A, mapset COTRN01) into the input area, capturing the CICS response and reason codes. No error handling is performed on the response in this paragraph.",
+  "keywords": [
+   "receive screen",
+   "user input",
+   "COTRN1A",
+   "screen input",
+   "CICS receive"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::POPULATE-HEADER-INFO": {
+  "summary": "Fills the screen header fields: the two application titles, transaction code CT01, program name COTRN01C, and the current date formatted as MM/DD/YY and current time as HH:MM:SS taken from the system clock.",
+  "keywords": [
+   "screen header",
+   "current date",
+   "current time",
+   "title lines",
+   "program name display"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::READ-TRANSACT-FILE": {
+  "summary": "Reads a single record from the TRANSACT file by transaction ID (with the UPDATE option) into the transaction record area. If the ID is not found it sets the error flag and shows 'Transaction ID NOT found...'; on any other failure it logs the response codes, sets the error flag and shows 'Unable to lookup Transaction...'. In both error cases the cursor is placed on the transaction ID field and the screen is re-sent.",
+  "keywords": [
+   "read transaction",
+   "TRANSACT file",
+   "transaction not found",
+   "file read error",
+   "lookup by tran ID"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::CLEAR-CURRENT-SCREEN": {
+  "summary": "Handles PF4 by blanking all input and detail fields on the transaction view screen and re-sending the empty screen to the user.",
+  "keywords": [
+   "clear screen",
+   "PF4",
+   "reset fields",
+   "transaction view"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN01C::INITIALIZE-ALL-FIELDS": {
+  "summary": "Resets the transaction view screen: positions the cursor on the Transaction ID input field and blanks the input ID, all displayed transaction fields (ID, card number, type/category codes, source, amount, description, timestamps), the merchant fields and the message area.",
+  "keywords": [
+   "initialize fields",
+   "clear fields",
+   "reset screen",
+   "cursor position",
+   "blank message"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::WS-VARIABLES": {
+  "summary": "Working-storage area holding the program's fixed identifiers (program name COTRN02C, CICS transaction CT02) and the names of the four files it uses: the transaction file, account data file, card cross-reference file and its account-keyed alternate index. It also holds an error flag, CICS response codes, a user-modified flag, and numeric work fields for the account ID, card number, transaction ID, transaction amount and the expected date format YYYY-MM-DD.",
+  "keywords": [
+   "working storage",
+   "file names",
+   "error flag",
+   "transaction amount",
+   "date format",
+   "CT02"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::CSUTLDTC-PARM": {
+  "summary": "Parameter block passed to the shared date-validation routine CSUTLDTC, containing the date to check, the expected format, and a result area with a severity code, message number and message text. The chunk also pulls in the common communication area, the CT02-specific commarea fields (first/last transaction ID on the page, page number, next-page flag, selected transaction), the screen map, title, date, message, transaction and account record layouts, and standard CICS attention-key and attribute definitions.",
+  "keywords": [
+   "date validation",
+   "CSUTLDTC",
+   "commarea",
+   "copybooks",
+   "selected transaction",
+   "screen layout"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::DFHCOMMAREA": {
+  "summary": "Linkage-section definition of the CICS communication area received from the calling program or previous screen, sized dynamically by the length passed in (EIBCALEN). It is the raw buffer that is copied into the program's own commarea structure at start-up.",
+  "keywords": [
+   "commarea",
+   "linkage section",
+   "program input",
+   "EIBCALEN"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::MAIN-PARA": {
+  "summary": "Entry point of the Add Transaction screen. If no commarea is received it routes back to the sign-on program; on first entry it initialises the screen, pre-fills the card number if a transaction was pre-selected from the previous screen, and displays the Add Transaction screen. On re-entry it receives the screen and acts on the key pressed: Enter validates and adds the transaction, PF3 returns to the previous screen or main menu, PF4 clears the screen, PF5 copies the last transaction's data, and any other key shows an invalid-key error. It then returns to CICS keeping transaction CT02 active.",
+  "keywords": [
+   "add transaction",
+   "main entry",
+   "function keys",
+   "PF3 exit",
+   "PF4 clear",
+   "PF5 copy last"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::PROCESS-ENTER-KEY": {
+  "summary": "Handles the Enter key by validating the account/card key fields and then all transaction data fields. If the Confirm field is Y/y the transaction is added; if it is N, blank or empty the user is prompted to confirm; any other value produces an 'Invalid value, valid values are (Y/N)' error and the screen is redisplayed with the cursor on the Confirm field.",
+  "keywords": [
+   "enter key",
+   "confirm add",
+   "Y/N confirmation",
+   "validate input",
+   "add transaction"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::VALIDATE-INPUT-KEY-FIELDS": {
+  "summary": "Checks that either an Account ID or a Card Number was entered. If the Account ID is given it must be numeric and is looked up in the card cross-reference alternate index (CXACAIX) to fill in the card number; if instead the Card Number is given it must be numeric and is looked up in the card cross-reference file (CCXREF) to fill in the account ID. If neither is entered, an 'Account or Card Number must be entered' error is shown.",
+  "keywords": [
+   "account ID validation",
+   "card number validation",
+   "cross-reference lookup",
+   "numeric check",
+   "required field"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::VALIDATE-INPUT-DATA-FIELDS": {
+  "summary": "Validates all transaction detail fields on the screen. If an error already occurred the detail fields are blanked. It then checks that type code, category code, source, description, amount, original date, processing date, merchant ID, name, city and zip are all filled; that type and category codes and merchant ID are numeric; that the amount has the format -99999999.99 (sign, 8 digits, point, 2 decimals); and that both dates match YYYY-MM-DD and pass the CSUTLDTC date-validation routine. The amount is reformatted into a standard edited form. Each failure sets an error message, positions the cursor on the offending field and redisplays the screen.",
+  "keywords": [
+   "field validation",
+   "amount format",
+   "date validation",
+   "required fields",
+   "merchant details",
+   "type category code"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::ADD-TRANSACTION": {
+  "summary": "Creates a new transaction record. It browses the transaction file backwards from the highest key to find the last transaction ID, adds 1 to generate the new ID, then builds the record from the screen fields: type, category, source, description, amount, card number, merchant ID/name/city/zip, and original and processing timestamps. Finally it writes the record to the transaction file.",
+  "keywords": [
+   "add transaction",
+   "generate transaction ID",
+   "next ID",
+   "write transaction",
+   "TRANSACT file"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::COPY-LAST-TRAN-DATA": {
+  "summary": "PF5 function that validates the account/card key fields, then reads the most recent transaction in the transaction file (browsing backwards from the highest key). If no error occurred it copies that transaction's type, category, source, amount, description, dates and merchant details into the screen fields, and then processes the screen as if Enter had been pressed.",
+  "keywords": [
+   "copy last transaction",
+   "PF5",
+   "prefill screen",
+   "latest transaction",
+   "reuse transaction data"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::RETURN-TO-PREV-SCREEN": {
+  "summary": "Transfers control to the previous or target program via CICS XCTL, defaulting to the sign-on program COSGN00C if no target is set. Before transferring it records this program and transaction CT02 as the origin in the commarea and resets the program context.",
+  "keywords": [
+   "return to previous screen",
+   "exit",
+   "XCTL",
+   "navigation",
+   "sign-on program"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::SEND-TRNADD-SCREEN": {
+  "summary": "Displays the Add Transaction screen (map COTRN2A in mapset COTRN02). It fills the header information, places the current message in the error-message field, sends the screen with erase and cursor positioning, and then returns to CICS with transaction CT02 and the commarea so the next input comes back to this program.",
+  "keywords": [
+   "send screen",
+   "display map",
+   "error message",
+   "COTRN2A",
+   "screen output"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::RECEIVE-TRNADD-SCREEN": {
+  "summary": "Reads the user's input from the Add Transaction screen (map COTRN2A, mapset COTRN02) into the program's input area, capturing the CICS response and reason codes.",
+  "keywords": [
+   "receive screen",
+   "user input",
+   "map input",
+   "COTRN2A"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::POPULATE-HEADER-INFO": {
+  "summary": "Fills the screen header with the two standard titles, the transaction code CT02, the program name, and the current date (MM/DD/YY) and time (HH:MM:SS) taken from the system clock.",
+  "keywords": [
+   "screen header",
+   "current date",
+   "current time",
+   "titles",
+   "program name"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::READ-CXACAIX-FILE": {
+  "summary": "Reads the card cross-reference file via its account-ID alternate index (CXACAIX) to find the card linked to the entered account. If the account is not found an 'Account ID NOT found' error is displayed; any other failure logs the response codes and shows an 'Unable to lookup Acct in XREF AIX file' error, with the cursor on the Account ID field.",
+  "keywords": [
+   "account lookup",
+   "cross-reference",
+   "alternate index",
+   "account not found",
+   "CXACAIX"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::READ-CCXREF-FILE": {
+  "summary": "Reads the card cross-reference file (CCXREF) by card number to find the associated account. If the card is not found a 'Card Number NOT found' error is displayed; any other failure logs the response codes and shows an 'Unable to lookup Card # in XREF file' error, with the cursor on the Card Number field.",
+  "keywords": [
+   "card lookup",
+   "cross-reference",
+   "card not found",
+   "CCXREF",
+   "account from card"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::STARTBR-TRANSACT-FILE": {
+  "summary": "Starts a browse on the transaction file (TRANSACT) positioned at the transaction ID key, so records can be read backwards to find the latest transaction. A not-found response shows 'Transaction ID NOT found'; any other failure logs the codes and shows 'Unable to lookup Transaction'.",
+  "keywords": [
+   "start browse",
+   "transaction file",
+   "TRANSACT",
+   "STARTBR",
+   "lookup transaction"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::READPREV-TRANSACT-FILE": {
+  "summary": "Reads the previous record in the transaction file browse into the transaction record area, which yields the highest existing transaction ID. If the end of file is reached (no transactions exist) the transaction ID is set to zero; other failures log the codes and show an 'Unable to lookup Transaction' error.",
+  "keywords": [
+   "read previous",
+   "last transaction",
+   "highest transaction ID",
+   "READPREV",
+   "empty file"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::ENDBR-TRANSACT-FILE": {
+  "summary": "Ends the browse on the transaction file (TRANSACT), releasing the browse position.",
+  "keywords": [
+   "end browse",
+   "transaction file",
+   "ENDBR",
+   "TRANSACT"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::WRITE-TRANSACT-FILE": {
+  "summary": "Writes the new transaction record to the transaction file (TRANSACT) keyed by transaction ID. On success it clears all screen fields and shows a green 'Transaction added successfully. Your Tran ID is nnn.' message. If the ID already exists (duplicate key or record) it shows 'Tran ID already exist'; any other failure logs the codes and shows 'Unable to Add Transaction'.",
+  "keywords": [
+   "write transaction",
+   "add transaction",
+   "duplicate check",
+   "success message",
+   "Tran ID already exists",
+   "TRANSACT"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::CLEAR-CURRENT-SCREEN": {
+  "summary": "PF4 function that resets all input fields on the Add Transaction screen to their initial state and redisplays the empty screen.",
+  "keywords": [
+   "clear screen",
+   "PF4",
+   "reset fields",
+   "initialize"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "COTRN02C::INITIALIZE-ALL-FIELDS": {
+  "summary": "Clears every input field on the Add Transaction screen (COTRN2A map) to blanks, including account ID, card number, transaction type, category, source, amount, description, origination and processing dates, merchant ID/name/city/zip, and the confirm flag. It also clears the working message area and positions the cursor on the account ID field so the user starts a fresh entry.",
+  "keywords": [
+   "clear screen",
+   "reset fields",
+   "add transaction",
+   "cursor position",
+   "COTRN2A map",
+   "initialize"
+  ],
+  "model": "claude-fable-5-1"
+ },
+ "CVTRA05Y::TRAN-RECORD": {
+  "summary": "Copybook defining the layout of a 350-byte card transaction record. It holds the transaction ID, type and category codes, source, description, signed amount, merchant details (ID, name, city, ZIP), the card number, and the original and processing timestamps, with 20 bytes of filler reserved for future use.",
+  "keywords": [
+   "transaction record",
+   "transaction layout",
+   "merchant details",
+   "transaction amount",
+   "card number",
+   "copybook"
+  ],
+  "model": "claude-fable-5-1"
+ }
+}
